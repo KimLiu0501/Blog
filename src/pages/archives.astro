@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getPublishedPosts, postUrl } from '../lib/posts';
+import { formatShortDate } from '../site';
+
+const posts = await getPublishedPosts();
+
+// 按年份分组
+const byYear = new Map<number, typeof posts>();
+for (const post of posts) {
+  const year = post.data.pubDate.getFullYear();
+  if (!byYear.has(year)) byYear.set(year, []);
+  byYear.get(year)!.push(post);
+}
+const years = [...byYear.entries()].sort((a, b) => b[0] - a[0]);
+---
+
+<BaseLayout title="归档">
+  <div class="section-head">
+    <h2>归档</h2>
+    <span class="more">共 {posts.length} 篇</span>
+  </div>
+
+  {
+    years.length === 0 ? (
+      <p class="empty">还没有已发布的文章。</p>
+    ) : (
+      years.map(([year, list]) => (
+        <section class="year-group">
+          <h3 class="year-label">{year}</h3>
+          <div>
+            {list.map((entry) => (
+              <div class="archive-row">
+                <span class="archive-date">{formatShortDate(entry.data.pubDate)}</span>
+                <a href={postUrl(entry)}>{entry.data.title}</a>
+              </div>
+            ))}
+          </div>
+        </section>
+      ))
+    )
+  }
+</BaseLayout>

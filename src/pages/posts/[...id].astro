@@ -1,0 +1,67 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { COLLECTION_IDS, getCollectionMeta } from '../../collections';
+import { formatDate } from '../../site';
+import type { PostEntry } from '../../lib/posts';
+
+export async function getStaticPaths() {
+  const paths: Array<{ params: { id: string }; props: { entry: PostEntry } }> = [];
+
+  for (const cid of COLLECTION_IDS) {
+    const list = await getCollection(cid as 'reading-notes');
+    for (const entry of list) {
+      // 正式构建时草稿不生成页面，但本地 dev 可以访问来预览
+      if (entry.data.draft && import.meta.env.PROD) continue;
+      paths.push({ params: { id: `${cid}/${entry.id}` }, props: { entry } });
+    }
+  }
+  return paths;
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const meta = getCollectionMeta(entry.collection);
+---
+
+<BaseLayout title={entry.data.title} description={entry.data.description}>
+  <article>
+    <header class="post-header">
+      <h1>{entry.data.title}</h1>
+      <div class="post-meta">
+        <time datetime={entry.data.pubDate.toISOString()}>{formatDate(entry.data.pubDate)}</time>
+        <a href={`/collections/${entry.collection}`}>{meta.title}</a>
+        {entry.data.draft && <span class="draft-badge">草稿 · 仅本地可见</span>}
+      </div>
+      {
+        entry.data.updatedDate && (
+          <div class="post-meta">
+            <span>最后更新 {formatDate(entry.data.updatedDate)}</span>
+          </div>
+        )
+      }
+      {
+        entry.data.tags.length > 0 && (
+          <div class="post-tags">
+            {entry.data.tags.map((tag) => (
+              <span class="tag">{tag}</span>
+            ))}
+          </div>
+        )
+      }
+    </header>
+
+    {
+      entry.data.cover && (
+        <img class="post-cover" src={entry.data.cover} alt={entry.data.title} />
+      )
+    }
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    <hr />
+    <p><a href={`/collections/${entry.collection}`}>← 回到「{meta.title}」</a></p>
+  </article>
+</BaseLayout>

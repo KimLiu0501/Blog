@@ -1,0 +1,66 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import { getPublishedPosts } from '../lib/posts';
+import { COLLECTION_IDS, getCollectionMeta } from '../collections';
+import { getCollection } from 'astro:content';
+import { SITE } from '../site';
+
+const posts = await getPublishedPosts();
+const recent = posts.slice(0, 5);
+
+// 每个合集的文章数（只算已发布的）
+const counts = await Promise.all(
+  COLLECTION_IDS.map(async (id) => {
+    const list = await getCollection(id as 'reading-notes');
+    return { id, count: list.filter((p) => !p.data.draft).length };
+  })
+);
+---
+
+<BaseLayout>
+  <section class="intro">
+    <h1>{SITE.title}</h1>
+    <p>{SITE.description}</p>
+  </section>
+
+  <section style="margin-bottom: 3rem">
+    <div class="section-head">
+      <h2>最近写的</h2>
+      {posts.length > 5 && <a class="more" href="/archives">全部 {posts.length} 篇 →</a>}
+    </div>
+    {
+      recent.length > 0 ? (
+        <ul class="post-list">
+          {recent.map((entry) => (
+            <PostCard entry={entry} showCollection />
+          ))}
+        </ul>
+      ) : (
+        <p class="empty">还没有文章。往 src/content/ 下的合集目录里丢一个 .md 就有了。</p>
+      )
+    }
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>合集</h2>
+    </div>
+    <ul class="collection-grid">
+      {
+        counts.map(({ id, count }) => {
+          const meta = getCollectionMeta(id);
+          return (
+            <li>
+              <a class="collection-card" href={`/collections/${id}`}>
+                <h3>{meta.title}</h3>
+                <p>{meta.description}</p>
+                <span class="collection-count">{count} 篇</span>
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </section>
+</BaseLayout>

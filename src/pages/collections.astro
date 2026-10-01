@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { COLLECTION_IDS, getCollectionMeta } from '../collections';
+import { getPostsInCollection } from '../lib/posts';
+
+const items = await Promise.all(
+  COLLECTION_IDS.map(async (id) => ({
+    id,
+    meta: getCollectionMeta(id),
+    count: (await getPostsInCollection(id)).length,
+  }))
+);
+---
+
+<BaseLayout title="合集">
+  <div class="section-head">
+    <h2>全部合集</h2>
+  </div>
+
+  <ul class="collection-grid">
+    {
+      items.map(({ id, meta, count }) => (
+        <li>
+          <a class="collection-card" href={`/collections/${id}`}>
+            <h3>{meta.title}</h3>
+            <p>{meta.description}</p>
+            <span class="collection-count">{count} 篇</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</BaseLayout>

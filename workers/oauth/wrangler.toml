@@ -1,0 +1,17 @@
+name = "blog-cms-auth"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+
+# 两个密钥不写在这里，用命令设置：
+#   npx wrangler secret put GITHUB_CLIENT_ID
+#   npx wrangler secret put GITHUB_CLIENT_SECRET
+#
+# 浏览器 OAuth 登录失败时（常见于开了代理，localhost 回调打不通），改用 API Token：
+#   export CLOUDFLARE_API_TOKEN=xxx
+#   npx wrangler deploy
+# 若提示缺少 account_id，取消下面这行注释并填入面板右侧边栏的 Account ID：
+# account_id = ""
+
+# 只允许你的博客域名调用这个 worker（部署后把 example.com 换成真实域名）
+# [vars]
+# ALLOWED_ORIGIN = "https://example.com"

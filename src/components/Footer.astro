@@ -1,0 +1,15 @@
+---
+import { SITE } from '../site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span>© {year} {SITE.author}</span>
+    <span style="margin: 0 0.5rem">·</span>
+    <a href="/rss.xml">RSS</a>
+    <span style="margin: 0 0.5rem">·</span>
+    <a href="/admin/">管理</a>
+  </div>
+</footer>

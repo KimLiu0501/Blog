@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getDraftPosts, postUrl } from '../lib/posts';
+import { getCollectionMeta } from '../collections';
+import { formatShortDate } from '../site';
+
+// 草稿箱只在本地开发服务器里存在。
+// 正式构建时这个页面返回 404 —— 草稿不会以任何形式出现在线上。
+if (import.meta.env.PROD) {
+  return new Response(null, { status: 404 });
+}
+
+const drafts = await getDraftPosts();
+---
+
+<BaseLayout title="草稿箱">
+  <div class="section-head">
+    <h2>草稿箱</h2>
+    <span class="more">{drafts.length} 篇未发布</span>
+  </div>
+
+  <p style="color: var(--text-muted); margin-top: -0.75rem; font-size: 0.92rem">
+    这个页面只在本地 <code>npm run dev</code> 时可见，线上不存在。
+    把 frontmatter 里的 <code>draft: true</code> 删掉或改成 <code>false</code> 就发布了。
+  </p>
+
+  {
+    drafts.length === 0 ? (
+      <p class="empty">没有草稿。</p>
+    ) : (
+      <ul class="post-list">
+        {drafts.map((entry) => (
+          <li class="post-item">
+            <a class="post-item-title" href={postUrl(entry)}>{entry.data.title}</a>
+            <span class="draft-badge">草稿</span>
+            {entry.data.description && <p class="post-item-desc">{entry.data.description}</p>}
+            <div class="post-meta">
+              <time datetime={entry.data.pubDate.toISOString()}>
+                {formatShortDate(entry.data.pubDate)}
+              </time>
+              <a href={`/collections/${entry.collection}`}>
+                {getCollectionMeta(entry.collection).title}
+              </a>
+            </div>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</BaseLayout>

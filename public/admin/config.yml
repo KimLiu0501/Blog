@@ -1,0 +1,63 @@
+# Sveltia CMS 配置
+#
+# 部署前必须改这三处：
+#   1. repo      -> 你的 GitHub 仓库（用户名/仓库名）
+#   2. base_url  -> 你部署的 OAuth Worker 地址
+#   3. branch    -> 你的默认分支（main 或 master）
+
+backend:
+  name: github
+  repo: your-name/your-repo # ← 只剩这一处要改：你的 GitHub 用户名/仓库名
+  branch: main
+  base_url: https://blog-cms-auth.kimliu.workers.dev
+  auth_endpoint: auth
+
+# 图片上传后放到 public/images，正文里引用路径是 /images/xxx.jpg
+media_folder: public/images
+public_folder: /images
+
+# 界面语言
+locale: zh_CN
+
+collections:
+  - name: reading-notes
+    label: 读书笔记
+    folder: src/content/reading-notes
+    create: true
+    slug: '{{slug}}'
+    fields:
+      - { name: title, label: 标题, widget: string }
+      - { name: description, label: 摘要, widget: string, required: false }
+      - { name: pubDate, label: 发布日期, widget: datetime, date_format: 'YYYY-MM-DD' }
+      - { name: draft, label: 存为草稿, widget: boolean, default: true }
+      - { name: tags, label: 标签, widget: list, required: false }
+      - { name: cover, label: 封面图, widget: image, required: false }
+      - { name: body, label: 正文, widget: markdown }
+
+  - name: tech
+    label: 技术随笔
+    folder: src/content/tech
+    create: true
+    slug: '{{slug}}'
+    fields:
+      - { name: title, label: 标题, widget: string }
+      - { name: description, label: 摘要, widget: string, required: false }
+      - { name: pubDate, label: 发布日期, widget: datetime, date_format: 'YYYY-MM-DD' }
+      - { name: draft, label: 存为草稿, widget: boolean, default: true }
+      - { name: tags, label: 标签, widget: list, required: false }
+      - { name: cover, label: 封面图, widget: image, required: false }
+      - { name: body, label: 正文, widget: markdown }
+
+  - name: life
+    label: 生活影像
+    folder: src/content/life
+    create: true
+    slug: '{{slug}}'
+    fields:
+      - { name: title, label: 标题, widget: string }
+      - { name: description, label: 摘要, widget: string, required: false }
+      - { name: pubDate, label: 发布日期, widget: datetime, date_format: 'YYYY-MM-DD' }
+      - { name: draft, label: 存为草稿, widget: boolean, default: true }
+      - { name: tags, label: 标签, widget: list, required: false }
+      - { name: cover, label: 封面图, widget: image, required: false }
+      - { name: body, label: 正文, widget: markdown }

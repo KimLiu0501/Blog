@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>写文章</title>
+  </head>
+  <body>
+    <!--
+      Sveltia CMS：网页版 markdown 编辑器，左边写、右边实时预览。
+      保存 = 往 GitHub 仓库提交一个 commit = Cloudflare Pages 自动重建。
+
+      如果想换回 Decap CMS（老牌、插件多），把这行换成：
+      <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+      配置文件 config.yml 两边通用，不用改。
+
+      如果 unpkg 打不开，可以把 CMS 文件下载到本地自托管，
+      把 src 改成 ./sveltia-cms.js 并把文件放在同目录下。
+    -->
+    <script type="module" src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
+  </body>
+</html>

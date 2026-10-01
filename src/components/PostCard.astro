@@ -1,0 +1,27 @@
+---
+import { postUrl, type PostEntry } from '../lib/posts';
+import { getCollectionMeta } from '../collections';
+import { formatShortDate } from '../site';
+
+interface Props {
+  entry: PostEntry;
+  showCollection?: boolean;
+}
+
+const { entry, showCollection = false } = Astro.props;
+const meta = getCollectionMeta(entry.collection);
+---
+
+<li class="post-item">
+  <a class="post-item-title" href={postUrl(entry)}>{entry.data.title}</a>
+  {entry.data.draft && <span class="draft-badge">草稿</span>}
+  {entry.data.description && <p class="post-item-desc">{entry.data.description}</p>}
+  <div class="post-meta">
+    <time datetime={entry.data.pubDate.toISOString()}>{formatShortDate(entry.data.pubDate)}</time>
+    {
+      showCollection && (
+        <a href={`/collections/${entry.collection}`}>{meta.title}</a>
+      )
+    }
+  </div>
+</li>

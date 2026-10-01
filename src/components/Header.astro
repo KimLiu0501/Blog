@@ -1,0 +1,26 @@
+---
+import { SITE } from '../site';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+
+// 草稿箱入口只在本地开发时出现
+const nav = import.meta.env.DEV
+  ? [...SITE.nav, { label: '草稿箱', href: '/drafts' }]
+  : SITE.nav;
+---
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="site-title" href="/">{SITE.title}</a>
+    <nav class="site-nav">
+      {
+        nav.map((item) => (
+          <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</header>
